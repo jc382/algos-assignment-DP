@@ -36,7 +36,32 @@ public class GlassFalling {
     // Do not change the parameters!
     public int glassFallingBottomUp(int floors, int sheets) {
         // Fill in here and change the return
-        return 0;
+        int trials[][] = new int[floors + 1][sheets + 1];
+        int temp;
+        // base case: if only 1 sheet, worst case is to try all the floors
+        for (int i = 1; i <= floors; i++) {
+            trials[i][1] = i;
+        }
+        // base case: 0 or 1 floor the solution is guaranteed
+        for (int i = 1; i <= sheets; i++) {
+            trials[1][i] = 1;
+            trials[0][i] = 0;
+        }
+        for (int i = 2; i <= floors; i++) {
+            for (int j = 2; j <= sheets; j++) {
+                trials[i][j] = -1;
+                for (int k = 1; k <= i; k++) {
+                    /* take the worst case of the two posibilites:
+                       if break, lost one sheet, check floor below it,
+                       if does not break, number of sheets remains, check the rest of the remaining floor
+                    */
+                    temp = 1 + Math.max(trials[k - 1][j - 1], trials[i - k][j]);
+                    // among all the floors with the worst case, find the lowest trial
+                    if (temp < trials[i][j] || trials[i][j] == -1) trials[i][j] = temp;
+                }
+            }
+        }
+        return trials[floors][sheets];
     }
 
 
