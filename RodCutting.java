@@ -28,8 +28,18 @@ public class RodCutting {
 
     // Do not change the parameters!
     public int rodCuttingBottomUp(int rodLength, int[] lengthPrices) {
-
-        return 0;
+        int max_val[] = new int[rodLength + 1];
+        // base case
+        max_val[0] = 0;
+        // cut the rod and compare each, get the highest value
+        for (int i = 1; i <= rodLength; i++) {
+            int temp_max = -1;
+            for(int j = 0; j < i; j++) {
+                temp_max = Math.max(temp_max, lengthPrices[j] + max_val[i - j - 1]);
+            }
+            max_val[i] = temp_max;
+        }
+        return max_val[rodLength];
     }
 
 
