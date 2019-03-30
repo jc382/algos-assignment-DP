@@ -5,24 +5,32 @@ import java.util.HashMap;
  * Author: Jingwei Chen
  */
 public class RodCutting {
-
     // Do not change the parameters!
+
     public int rodCuttingRecur(int rodLength, int[] lengthPrices) {
-        HashMap<Integer, Integer> memo = new HashMap<Integer, Integer>();
-        int max_value = -1;
+        int memo[] = new int[rodLength + 1];
+        // initialization
+        for (int i = 0; i < memo.length; i++) {
+            memo[i] = -1;
+        }
+        return rodCuttingMemo(rodLength, lengthPrices, memo);
+    }
+
+    private int rodCuttingMemo(int rodLength, int[] lengthPrices, int[] memo) {
         // check for calculated value
-        if (memo.containsKey(rodLength)) return memo.get(rodLength);
+        if (memo[rodLength] >= 0) return memo[rodLength];
+        int max_value = -1;
         // base case
         if (rodLength == 0) {
             max_value = 0;
         } else {
             // cut the rod and compare each, get the highest value
-            for (int i = 1; i < rodLength; i++) {
-                max_value = Math.max(max_value, lengthPrices[i] + rodCuttingRecur(rodLength - i - 1, lengthPrices));
+            for (int i = 0; i < rodLength; i++) {
+                max_value = Math.max(max_value, lengthPrices[i] + rodCuttingMemo(rodLength - i - 1, lengthPrices, memo));
             }
         }
         // save the calculated value
-        memo.put(rodLength, max_value);
+        memo[rodLength] = max_value;
         return max_value;
     }
 
@@ -31,10 +39,9 @@ public class RodCutting {
         int max_val[] = new int[rodLength + 1];
         // base case
         max_val[0] = 0;
-        // cut the rod and compare each, get the highest value
         for (int i = 1; i <= rodLength; i++) {
             int temp_max = -1;
-            for(int j = 0; j < i; j++) {
+            for (int j = 0; j < i; j++) {
                 temp_max = Math.max(temp_max, lengthPrices[j] + max_val[i - j - 1]);
             }
             max_val[i] = temp_max;
