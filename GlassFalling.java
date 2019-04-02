@@ -30,34 +30,33 @@ public class GlassFalling {
 
     // Optional:
     // Pick whatever parameters you want to, just make sure to return an int.
+
+    HashMap<String, Integer> memo = new HashMap<String, Integer>();
+
     public int glassFallingMemoized(int floors, int sheets) {
         // Fill in here and change the return
-        int memo[][] = new int[floors + 1][sheets + 1];
-        // initialization
-        for (int i = 0; i < floors; i++) {
-            for (int j = 0; j < sheets; j++) {
-                memo[i][j] = -1;
-            }
-        }
-        return glassFallingMemoRec(floors, sheets, memo);
-    }
 
-    private int glassFallingMemoRec(int floors, int sheets, int[][] memo) {
-        if (memo[floors][sheets] >= 0) return memo[floors][sheets];
         int minTrials = -1;
         int temp = -1;
-        if (sheets == 1) {
-            minTrials = floors;
-        } else if (floors == 0 || floors == 1) {
-            minTrials = floors;
+        // base case: if only 1 sheet, worst case is to try all the floors
+        if (sheets == 1) return floors;
+        // base case: 0 or 1 floor the solution is guaranteed
+        if (floors == 0 || floors == 1) return floors;
+        // convert to string for key
+        String key = String.valueOf(floors) + String.valueOf(sheets);
+        if (memo.containsKey(key)) {
+            // check for key existence
+            minTrials = memo.get(key);
         } else {
+            // if key not exsit, do the calculation
             for (int i = 1; i <= floors; i++) {
-                temp = Math.max(glassFallingRecur(i - 1, sheets - 1), glassFallingMemoRec(floors - i, sheets, memo));
-                if (temp < minTrials || minTrials == -1) minTrials = temp;
+                temp = Math.max(glassFallingMemoized(i - 1, sheets - 1), glassFallingMemoized(floors - i, sheets));
+                if (temp < minTrials || minTrials == -1) minTrials = temp + 1;
             }
+            // store the key
+            memo.put(key, minTrials);
         }
-        memo[floors][sheets] = minTrials + 1;
-        return minTrials + 1;
+        return minTrials;
     }
 
     // Do not change the parameters!
